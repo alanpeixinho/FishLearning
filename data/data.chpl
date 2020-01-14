@@ -1,5 +1,6 @@
 
-use LinearAlgebra;
+private use LinearAlgebra;
+private use Random;
 
 class Dataset {
   var nsamples, nfeats: int;
@@ -27,6 +28,33 @@ class Dataset {
     this.labelsDomain = {1..nsamples};
     this.Y = Y;
   }
+
+  iter nsplit(trainRatio = 0.5, n = 1) {
+    var ids = for i in 1..nsamples do i;
+
+    var ntrain = (trainRatio*nsamples): int;
+    var ntest = nsamples - ntrain;
+
+    var Ytrain: [1..ntrain] real;
+    var Xtrain: [1..ntrain, 1..nfeats] real;
+
+    var Ytest: [1..ntest] real;
+    var Xtest: [1..ntest, 1..nfeats] real;
+
+    for s in 1..n {
+      shuffle(ids);
+      for i in 1..ntrain {
+        Xtrain(i, ..) = X(ids(i), ..);
+        Ytrain(i) = Y(ids(i));
+      }
+      for i in 1..ntest {
+        Xtest(i, ..) = X(ids(ntrain + i), ..);
+        Ytest(i) = Y(ids(ntrain + i));
+      }
+      yield (Xtrain, Ytrain, Xtest, Ytest);
+    }
+  }
+
 }
 
 private proc split(line, delimiter) throws {
