@@ -16,17 +16,17 @@ proc elapsed(msg = "time elapsed") {
 
 class LogisticRegression {
 
-  var learningRate = 1e-4;
-  var maxIter = 1000;
-  var stopCriteria = 1e-12;
+  var learning_rate = 1e-4;
+  var max_iter = 1000;
+  var stop_criteria = 1e-12;
 
   var ntrain, nfeats, nclasses: int;
 
-  var coefDomain: domain(2);
-  var coef: [coefDomain] real;
+  var coef_domain: domain(2);
+  var coef: [coef_domain] real;
 
-  var biasDomain: domain(1);
-  var bias: [biasDomain] real;
+  var bias_domain: domain(1);
+  var bias: [bias_domain] real;
 
   proc train(_X, _Y) {
 
@@ -45,10 +45,10 @@ class LogisticRegression {
     elapsed("transpose");
 
     start();
-    biasDomain = {1..nfeats};
-    coefDomain = {1..nfeats, 1..nclasses};
-    var gradient: [coefDomain] real = 0.0;
-    var biasGradient: [biasDomain] real = 0.0;
+    bias_domain = {1..nfeats};
+    coef_domain = {1..nfeats, 1..nclasses};
+    var gradient: [coef_domain] real = 0.0;
+    var bias_gradient: [bias_domain] real = 0.0;
     var prediction: [{1..ntrain, 1..nclasses}] real = 0.0;
     elapsed("aloc");
 
@@ -60,15 +60,15 @@ class LogisticRegression {
 
     /* fillRandom(coef); */
 
-    for it in 1..maxIter {
+    for it in 1..max_iter {
 
       forward(X, prediction);
       var cost = computeCost(prediction, y);
       backward(XT, y, prediction, gradient); //compute gradient
-      coef -= gradient * learningRate; //update weights
-      learningRate *= 0.9;
+      coef -= gradient * learning_rate; //update weights
+      learning_rate *= 0.9;
 
-      if abs(prev - cost) < stopCriteria then break;
+      if abs(prev - cost) < stop_criteria then break;
 
       prev = cost;
     }
