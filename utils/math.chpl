@@ -1,7 +1,7 @@
 
 const epsilon = 1e-12;
 
-proc oneHotEncoder(Y: [?D], nlabels: int) {
+proc oneHotEncoder(Y: [], nlabels: int) {
     const nsamples = Y.shape(1);
     var encoded: [1..nsamples, 1..nlabels] real;
 
@@ -48,4 +48,20 @@ proc accuracy(X1, X2) {
   }
 
   return right/total;
+}
+
+proc sum(x: []) {
+  return (+ reduce x);
+}
+
+proc dotProduct(ref C: [?DC], ref A: [?DA], ref B: [?DB])
+where DC.rank == 2 && DA.rank == 2 && DB.rank == 2
+{
+
+  forall (row, col) in DC {
+    // Zero out the value, in case C is reused.
+    C(row, col) = 0;
+    for i in DA.dim(2) do
+    C(row, col) += A(row, i) * B(i, col);
+  }
 }

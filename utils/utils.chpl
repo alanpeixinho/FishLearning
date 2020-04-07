@@ -1,4 +1,20 @@
 use Set;
+private use Time;
+
+var t = new Timer();
+
+proc tic() {
+  t.start();
+}
+
+proc toc() {
+  t.stop();
+}
+
+proc elapsed(msg = "time elapsed") {
+  t.stop();
+  writeln(msg, ": ", t.elapsed());
+}
 
 proc argmax(array: []) {
   var imax = array.domain.first;

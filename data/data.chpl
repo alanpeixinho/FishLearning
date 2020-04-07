@@ -62,7 +62,7 @@ private proc split(line, delimiter) throws {
     return data;
 }
 
-proc readCSV(filepath: string, delimiter = ' ', labelIdx = -1) throws {
+proc readCSV(filepath: string, delimiter = ' ', labelIdx = 0) throws {
     const file = open(filepath, iomode.r);
     const lines = for line in file.lines() do split(line, delimiter);
     file.close();
@@ -70,22 +70,23 @@ proc readCSV(filepath: string, delimiter = ' ', labelIdx = -1) throws {
     return matrix;
 }
 
-private proc toDataset(array: [] ?T, labelIdx = -1) where isArray(T) {
+private proc toDataset(array: [] ?T, label_idx = 0) where isArray(T) {
    const nrows = array.size;
    const ncols = array.head().size;
 
-   var matrix = Matrix(nrows, ncols);
-   for (x,y) in matrix.domain {
-     matrix(x, y) = array[x][y];
+   var X: [1..nrows, 1..ncols-1] real;
+   var Y: [1..nrows] real;
+
+   var true_label_idx = if label_idx > 0 then label_idx else ncols;
+
+   for (i,j) in {1..nrows, 1..ncols} {
+     if j == true_label_idx {
+       Y(i) = array[i][j];
+     } else {
+       X(i, j) = array[i][j];
+     }
    }
 
-   if(labelIdx==-1) {
-     return new Dataset(matrix);
-   } else {
-      var dataset = new Dataset(nrows, ncols-1);
-      dataset.X[.., ..labelIdx-1] = matrix[..,..labelIdx-1];
-      dataset.X[.., labelIdx..] = matrix[.., labelIdx+1..];
-      dataset.Y = matrix[.., labelIdx];
-      return dataset;
-   }
+   return new Dataset(X, Y);
+
 }
