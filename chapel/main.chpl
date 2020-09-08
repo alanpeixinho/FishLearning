@@ -28,7 +28,7 @@ proc main() {
       var clf = naive_bayes.train(Xtrain, Ytrain);
 
       var Ypred: [1..Ytest.size] int = -1;
-      Ypred = predict_batch(clf, Xtest);
+      Ypred = clf.predict_batch(Xtest);
       accuracies(i) = accuracy(Ytest, Ypred);
       i+=1;
     }

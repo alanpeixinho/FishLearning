@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../classifier/naive_bayes.h
+util/array.h
+../classifier/util/array.h
+
+../util/array.h
+algorithm
+-
+iostream
+-
+
+/home/peixinho/FishLearning/cpp/demo/hue.cpp
+util/array.h
+-
+iostream
+-
+classifier/naive_bayes.h
+-
+

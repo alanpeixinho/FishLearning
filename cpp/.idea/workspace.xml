@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2411e3e9-fc3d-4ae5-a2ca-7895873af578" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../data/data.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../data/digits.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../data/iris.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish_learning.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../main.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../solver/quadratic_programming.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../supervised/knn.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../supervised/logistic_regression.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../supervised/naive_bayes.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../utils/heap.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../utils/math.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../utils/stats.chpl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../utils/utils.chpl" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1euZd8FECwwFVJGyKNSKARFylD4" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/demo" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2411e3e9-fc3d-4ae5-a2ca-7895873af578" name="Default Changelist" comment="" />
+      <created>1595173522728</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1595173522728</updated>
+      <workItem from="1595173523845" duration="3107000" />
+      <workItem from="1595306120975" duration="7000" />
+      <workItem from="1595690742918" duration="1232000" />
+      <workItem from="1595703116840" duration="12353000" />
+      <workItem from="1596549507553" duration="34000" />
+      <workItem from="1596660376852" duration="40000" />
+      <workItem from="1596748871965" duration="37000" />
+      <workItem from="1597976006780" duration="4027000" />
+      <workItem from="1598116035595" duration="4979000" />
+      <workItem from="1598278256354" duration="14000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="743" y="311" width="424" height="491" key="FileChooserDialogImpl" timestamp="1596748898150">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="743" y="311" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1596748898150" />
+    <state x="654" y="286" width="611" height="534" key="find.popup" timestamp="1598119815883">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="654" y="286" width="611" height="534" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1598119815883" />
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1595174880758">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1595174880758" />
+  </component>
+</project>

@@ -15,6 +15,36 @@ class NaiveBayes {
     const sigma_c: [1..n_classes, 1..n_feats] real;
 
     const p_class: [1..n_classes] real;
+
+
+    proc predict(x): int {
+        var p_data = gaussianPdf(x, mu, sigma);
+        var p_joint_data = sum(log(p_data));
+
+        var p_class_given_data: [1..n_classes] real;
+
+        for c in 1..n_classes {
+          var p_data_given_class = gaussianPdf(x, mu_c(c, ..), sigma_c(c, ..));
+          var p_joint_data_given_class =  sum(log(p_data_given_class));
+          var p = p_joint_data_given_class + p_class(c) - p_joint_data;
+          p_class_given_data(c) = p;
+        }
+
+
+        return argmax(p_class_given_data);
+    }
+
+    proc predict_batch(X): [] int {
+
+      const n_test = X.shape(0);
+      var Y: [1..n_test] int;
+      forall i in 1..n_test {
+          Y(i) = predict(X(i, ..));
+      }
+
+      return Y;
+    }
+
 }
 
 proc train(X, Y) {
@@ -32,7 +62,7 @@ proc train(X, Y) {
 
   var p_class: [1..n_classes] real;
 
-  var n_train_c: [1..n_classes] int;
+  var n_train_c: [1..n_classes] int = 0;
 
   mu = 0.0;
   mu_c = 0.0;
@@ -73,32 +103,4 @@ proc train(X, Y) {
   return new NaiveBayes(n_train = n_train, n_feats=n_feats,
                         n_classes=n_classes, mu=mu, sigma=sigma,
                         mu_c=mu_c,sigma_c=sigma_c,p_class=p_class);
-}
-
-proc predict(classifier: NaiveBayes, x): int {
-    var p_data = gaussianPdf(x, classifier.mu, classifier.sigma);
-    var p_joint_data = sum(log(p_data));
-
-    var p_class_given_data: [1..classifier.n_classes] real;
-
-    for c in 1..classifier.n_classes {
-      var p_data_given_class = gaussianPdf(x, classifier.mu_c(c, ..), classifier.sigma_c(c, ..));
-      var p_joint_data_given_class =  sum(log(p_data_given_class));
-      var p = p_joint_data_given_class + classifier.p_class(c) - p_joint_data;
-      p_class_given_data(c) = p;
-    }
-
-
-    return argmax(p_class_given_data);
-}
-
-proc predict_batch(classifier: NaiveBayes, X): [] int {
-
-  const n_test = X.shape(0);
-  var Y: [1..n_test] int;
-  forall i in 1..n_test {
-      Y(i) = predict(classifier, X(i, ..));
-  }
-
-  return Y;
 }
