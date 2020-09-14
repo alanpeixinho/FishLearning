@@ -1,5 +1,5 @@
-all: main.chpl
-	chpl -lcblas -o main main.chpl -M utils -M data -M supervised -lcblas
+all: run_naive_bayes.chpl
+	chpl -lcblas -o run_naive_bayes run_naive_bayes.chpl -M utils -M data -M supervised -lcblas
 
 release: main.chpl
 	chpl -lblas --print-commands --fast -o main main.chpl -M utils -M data -M supervised 

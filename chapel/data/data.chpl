@@ -23,6 +23,13 @@ class Dataset {
     this.X = X;
   }
 
+  proc split(trainRatio = 0.5) {
+    var splits = for (Xtrain, Ytrain, Xtest, Ytest) in nsplit(trainRatio, n=1) do
+      (Xtrain, Ytrain, Xtest, Ytest);
+    return splits(0);
+  }
+
+
   iter nsplit(trainRatio = 0.5, n = 1) {
     var ids = for i in 1..nsamples do i;
 
@@ -51,14 +58,14 @@ class Dataset {
 
 }
 
-private proc split(line, delimiter) throws {
+private proc lineSplit(line, delimiter) throws {
     const data = for x in line.split(delimiter) do x:real;
     return data;
 }
 
 proc readCSV(filepath: string, delimiter = ' ', labelIdx = 0) throws {
     const file = open(filepath, iomode.r);
-    const lines = for line in file.lines() do split(line, delimiter);
+    const lines = for line in file.lines() do lineSplit(line, delimiter);
     file.close();
     const matrix = toDataset(lines, labelIdx);
     return matrix;
