@@ -1,1 +1,0 @@
-/usr/bin/clang++ -fPIC -shared -Wl,-soname,libfishlearning.so -o libfishlearning.so CMakeFiles/fishlearning.dir/classifier/naive_bayes.o 
