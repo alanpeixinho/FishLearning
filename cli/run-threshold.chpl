@@ -10,7 +10,7 @@ config const maximum: real = 100.0;
 proc main() {
     var img = image.readImage(input);
     threshold(img.l, minimum, maximum);
-    writef("Img { min: %r, max: %r }",
+    writef("Img { min: %r, max: %r }\n",
             min reduce img.l, max reduce img.l);
 
     image.writeImage(output, img);

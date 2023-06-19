@@ -9,12 +9,12 @@ class Image {
 
     const color: bool = false;
 
-    var l: [0..#depth, 0..#height, 0..#width] real; // luminance
+    var l: [0..#depth, 0..#height, 0..#width] real(64); // luminance
 
     // color
     var colorDomain: domain(3);
-    var h: [colorDomain] real; // hue
-    var c: [colorDomain] real; // chroma
+    var h: [colorDomain] real(64); // hue
+    var c: [colorDomain] real(64); // chroma
 
     proc postinit() {
         if color {
@@ -25,11 +25,11 @@ class Image {
     }
 }
 
-proc writeImage(filepath: string, img: Image) {
+proc writeImage(filepath: string, img: Image, type dtype: numeric = uint(8)) {
     const channels = if img.color then 3 else 1;
     const (height, width) = (img.height, img.width);
-    const maxvalue = 65535; // always 16bit
-    var data: [0..#height, 0..#width, 0..#channels] uint(16);
+    const maxvalue = max(dtype);
+    var data: [0..#height, 0..#width, 0..#channels] dtype;
 
     if img.color {
         for (y, x) in {0..#height, 0..#width} {
@@ -37,13 +37,13 @@ proc writeImage(filepath: string, img: Image) {
                     img.h[0, y, x],
                     img.c[0, y, x],
                     img.l[0, y, x], maxvalue);
-            data[y, x, 0] = r: uint(16);
-            data[y, x, 1] = g: uint(16);
-            data[y, x, 2] = b: uint(16);
+            data[y, x, 0] = round(r): dtype;
+            data[y, x, 1] = round(g): dtype;
+            data[y, x, 2] = round(b): dtype;
         }
     } else {
         for (y, x) in {0..#height, 0..#width} {
-            data[y, x, 0] = ((img.l[0, y, x] / 100.0) * maxvalue) : uint(16);
+            data[y, x, 0] = round((img.l[0, y, x] / 100.0) * maxvalue) : dtype;
         }
     }
     png.writePng(filepath, data);
@@ -74,9 +74,9 @@ proc readImage(filepath: string): Image {
 }
 
 proc rgb2xyz(red, green, blue, max: real = 255.0): (real, real, real) {
-    const r = red / max;
-    const g = green / max;
-    const b = blue / max;
+    const r: real = red / max;
+    const g: real = green / max;
+    const b: real = blue / max;
 
     const x = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b; // [0, ~0.95047]
     const y = 0.2126729 * r + 0.7151522 * g + 0.072175 * b; // [0, ~1.0]
@@ -86,9 +86,9 @@ proc rgb2xyz(red, green, blue, max: real = 255.0): (real, real, real) {
 }
 
 proc xyz2rgb(x: real, y: real, z: real, maxval: real = 255.0): (real, real, real) {
-    var r = 3.2406 * x - 1.5372 * y - 0.4986 * z;
-    var g = -0.9689 * x + 1.8758 * y + 0.0415 * z;
-    var b = 0.0557 * x - 0.2040 * y + 1.0570 * z;
+    var r: real = 3.2406 * x - 1.5372 * y - 0.4986 * z;
+    var g: real = -0.9689 * x + 1.8758 * y + 0.0415 * z;
+    var b: real = 0.0557 * x - 0.2040 * y + 1.0570 * z;
 
     r = clamp(r, 0.0, 1.0);
     g = clamp(g, 0.0, 1.0);
@@ -191,35 +191,3 @@ proc hcl2rgb(hue, chroma, luminance, maxval: real = 255.0): (real, real, real) {
     return xyz2rgb(x, y, z, maxval);
 }
 
-/*config const input: string;*/
-
-/*const img = readImage(input);*/
-
-/*var minh = 1000.0, maxh = -1000.0, minc = 1000.0, maxc = -1000.0, minl = 1000.0, maxl = -1000.0;*/
-/*for (r, g, b) in {0..255, 0..255, 0..255} {*/
-/*const (_h, _c, _l) = rgb2hcl(r/1.0, g/1.0, b/1.0);*/
-/*const (_r, _g, _b) = hcl2rgb(_h, _c, _l);*/
-/*const (h, c, l) = (abs(r-_r), abs(g-_g), abs(b-_b));*/
-/*minh = min(h, minh); maxh = max(h, maxh);*/
-/*minc = min(c, minc); maxc = max(c, maxc);*/
-/*minl = min(l, minl); maxl = max(l, maxl);*/
-/*}*/
-
-/*writeln("h: ", minh, " ", maxh);*/
-/*writeln("c: ", minc, " ", maxc);*/
-/*writeln("l: ", minl, " ", maxl);*/
-
-/*writeln(data.l);*/
-/*writeln(img.l[0,0,0]);*/
-
-
-/*config const r, g, b: uint(8);*/
-
-/*const (x, y, z) = rgb2xyz(r/1.0, g/1.0, b/1.0);*/
-/*const (_l, _a, _b) = xyz2lab(x, y, z);*/
-
-/*writeln(x, " ", y, " ", z);*/
-/*writeln(_l, " ", _a, " ", _b);*/
-
-/*const (l,a,b) = hcl2lab(img.h[0,0,0], img.c[0,0,0], img.l[0,0,0]);*/
-/*writeln(lab2xyz(l,a,b));*/
