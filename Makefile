@@ -1,5 +1,14 @@
-all: run_naive_bayes.chpl
-	chpl --fast -lcblas -o bin/run_naive_bayes run_naive_bayes.chpl -M utils -M data -M supervised -lcblas
+MODULES = -M filter -M supervised -M utils -M data -M image -M io
+CLI_SOURCES = $(wildcard cli/*.chpl)
+CLI_OBJECTS = $(patsubst cli/%.chpl,bin/%,$(CLI_SOURCES))
+FLAGS = --fast
+LIBS = -lpng
 
-library: fish_learning.chpl
-	chpl --fast -o fish_learning fish_learning.chpl --library -M utils -M data -M supervised -lcblas
+bin/%: cli/%.chpl
+	@echo $<
+	chpl ${FLAGS} $< ${MODULES} -o $@ $(LIBS)
+
+cli: $(CLI_OBJECTS)
+	@echo $(CLI_OBJECTS)
+
+all: cli

@@ -34,7 +34,7 @@ module knn {
 
           var distNeighbors: [1..k] real = INFINITY;
           var neighbors: [1..k] int;
-          var classes: [1..nclasses] int;
+          var classes: [1..nclasses] int = 0;
 
           for train in 1..nsamples {
 
@@ -53,15 +53,14 @@ module knn {
           }
 
           //majority vote class
-          classes = 0;
           for neighbor in 1..k {
-            var idx = neighbors(neighbor);
-            classes(this.Y(idx):int) += 1;
-            Y(test) = argmax(classes);
+            const idx = neighbors(neighbor);
+            const classe = this.Y(idx): int;
+            classes(classe) += 1;
           }
 
+          Y(test) = argmax(classes);
         }
       }
   }
-
 }

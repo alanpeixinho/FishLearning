@@ -1,19 +1,19 @@
 use Set;
 private use Time;
 
-const t: stopwatch;
+var profileKeys: domain(string);
+var profiler: [profileKeys] stopwatch;
 
-proc tic() {
-  t.start();
+proc tic(tag: string = "Profiler") {
+    var t: stopwatch;
+    profileKeys += tag;
+    profiler[tag].start();
 }
 
-proc toc() {
-  t.stop();
-}
-
-proc elapsed(msg = "time elapsed") {
-  t.stop();
-  writeln(msg, ": ", t.elapsed());
+proc toc(tag: string = "Profiler") {
+    profiler[tag].stop();
+    writeln(tag, " => ", profiler[tag].elapsed());
+    profileKeys -= tag;
 }
 
 proc argmax(array: []) {

@@ -15,8 +15,7 @@ head(raw)
 StatNormalDensity <- ggproto(
   "StatNormalDensity", Stat,
   required_aes = "x",
-  default_aes = aes(y = stat(y)),
-  
+  default_aes = aes(y = stat(y)), 
   compute_group = function(data, scales, xlim = NULL, n = 101) {
     mean_value <- mean(data$x)
     sd_value <- sd(data$x)

@@ -60,8 +60,8 @@ proc sum(array) {
   return s;
 }
 
-proc min(array) {
-  var m = INFINITY;
+proc min(array: [] ?dtype) {
+  var m: dtype = max(dtype);
   for a in array {
     if a < m {
       m = a;
@@ -70,14 +70,28 @@ proc min(array) {
   return m;
 }
 
-proc max(array) {
-  var m = -INFINITY;
+proc max(array: [] ?dtype) {
+  var m: dtype = min(dtype);
   for i in array {
     if i > m {
       m = i;
     }
   }
   return m;
+}
+
+proc minmax(array: [] ?dtype) {
+    var minval = max(dtype);
+    var maxval = min(dtype);
+    for a in array {
+        if a < minval then minval = a;
+        if a > maxval then maxval = a;
+    }
+    return (minval, maxval);
+}
+
+proc clamp(val, minimum, maximum) {
+    return max(min(val, maximum), minimum);
 }
 
 proc dotProduct(ref C: [?DC], ref A: [?DA], ref B: [?DB])
