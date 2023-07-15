@@ -31,6 +31,8 @@ proc writeImage(filepath: string, img: Image, type dtype: numeric = uint(8)) {
     const maxvalue = max(dtype);
     var data: [0..#height, 0..#width, 0..#channels] dtype;
 
+    if filepath.size <= 0 then halt("No filepath defined to save image");
+
     if img.color {
         for (y, x) in {0..#height, 0..#width} {
             const (r, g, b) = hcl2rgb(
@@ -52,6 +54,8 @@ proc writeImage(filepath: string, img: Image, type dtype: numeric = uint(8)) {
 proc readImage(filepath: string): Image {
     const data = png.readPng(filepath, uint(16));
     const (height, width, channels) = data.shape;
+
+    if data.size <= 0 then warning("No image available in : " + filepath);
 
     var img = new Image(1, height, width, color = channels > 1);
     const maxvalue = if max(data) > 255 then 65535 else 255;

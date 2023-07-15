@@ -153,19 +153,3 @@ proc readPng(filepath: string, type dtype: numeric) {
 
     return img;
 }
-
-config const input: string;
-config const output: string;
-
-const img = readPng(input, uint(16));
-writePng(output, img);
-
-use stats;
-
-const hist = stats.histogram(img);
-
-proc sum(x) {
-    const s = (+ reduce x);
-    return s;
-}
-
