@@ -70,31 +70,31 @@ proc train(X, Y) {
   sigma_c = 0.0;
 
   //compute mean
-  for i in 1..n_train {
+  forall i in 1..n_train {
     var c = Y(i): int;
     mu += X(i,..);
     mu_c(c, ..) += X(i, ..);
     n_train_c(c) += 1;
   }
   mu /= n_train;
-  for f in 1..n_feats {
+  forall f in 1..n_feats {
     mu_c(.., f) /= n_train_c;
   }
 
   //compute standard deviation
-  for i in 1..n_train {
+  forall i in 1..n_train {
     var c = Y(i): int;
     sigma += (X(i, ..) - mu)**2;
     sigma_c(c, ..) += (X(i, ..) - mu_c(c, ..))**2;
   }
 
   sigma = sqrt(sigma / n_train);
-  for f in 1..n_feats {
+  forall f in 1..n_feats {
     sigma_c(.., f) = sqrt(sigma_c(..,f) / n_train_c);
   }
 
   //compute P(class)
-  for c in 1..n_classes {
+  forall c in 1..n_classes {
     p_class(c) = n_train_c(c): real / n_train;
   }
 

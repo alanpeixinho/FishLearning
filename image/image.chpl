@@ -6,18 +6,16 @@ class Image {
     const depth: uint(64) = 1;
     const height: uint(64);
     const width: uint(64);
+    const channels: uint(64);
 
-    const color: bool = false;
-
-    var l: [0..#depth, 0..#height, 0..#width] real(64); // luminance
-
+    var l: [0..#depth, 0..#height, 0..#width] real(64);
     // color
     var colorDomain: domain(3);
-    var h: [colorDomain] real(64); // hue
-    var c: [colorDomain] real(64); // chroma
+    var a: [colorDomain] real(64);
+    var b: [colorDomain] real(64);
 
     proc postinit() {
-        if color {
+        if channels > 1 {
             colorDomain = l.domain;
         } else {
             colorDomain = {..#0, ..#0, ..#0};
@@ -26,19 +24,19 @@ class Image {
 }
 
 proc writeImage(filepath: string, img: Image, type dtype: numeric = uint(8)) {
-    const channels = if img.color then 3 else 1;
+    const channels = img.channels;
     const (height, width) = (img.height, img.width);
     const maxvalue = max(dtype);
     var data: [0..#height, 0..#width, 0..#channels] dtype;
 
     if filepath.size <= 0 then halt("No filepath defined to save image");
 
-    if img.color {
+    if img.channels > 1 {
         for (y, x) in {0..#height, 0..#width} {
-            const (r, g, b) = hcl2rgb(
-                    img.h[0, y, x],
-                    img.c[0, y, x],
-                    img.l[0, y, x], maxvalue);
+            const (r, g, b) = lab2rgb(
+                    img.l[0, y, x],
+                    img.a[0, y, x],
+                    img.b[0, y, x], maxvalue);
             data[y, x, 0] = round(r): dtype;
             data[y, x, 1] = round(g): dtype;
             data[y, x, 2] = round(b): dtype;
@@ -57,16 +55,16 @@ proc readImage(filepath: string): Image {
 
     if data.size <= 0 then warning("No image available in : " + filepath);
 
-    var img = new Image(1, height, width, color = channels > 1);
+    var img = new Image(1, height, width, channels);
     const maxvalue = if max(data) > 255 then 65535 else 255;
 
-    if img.color {
+    if img.channels > 1 {
         for (y, x) in {0..#height, 0..#width} {
-            const (hue, chroma, luminance) = rgb2hcl(
+            const (l, a, b) = rgb2lab(
                     data[y, x, 0], data[y, x, 1], data[y, x, 2], maxvalue);
-            img.l[0, y, x] = luminance;
-            img.c[0, y, x] = chroma;
-            img.h[0, y, x] = hue;
+            img.l[0, y, x] = l;
+            img.a[0, y, x] = a;
+            img.b[0, y, x] = b;
         }
     } else {
         for (y, x) in {0..#height, 0..#width} {
@@ -181,6 +179,16 @@ proc lab2hcl(l: real, a: real, b: real): (real, real, real) {
     const luma = l; // [0, 100]
 
     return (hue, chroma, luma);
+}
+
+proc rgb2lab(red, green, blue, maxval: real = 255.0): (real, real, real) {
+    const (x, y, z) = rgb2xyz(red, green, blue, maxval);
+    return xyz2lab(x, y, z);
+}
+
+proc lab2rgb(l, a, b, maxval: real = 255.0): (real, real, real) {
+    const (x, y, z) = lab2xyz(l, a, b);
+    return xyz2rgb(x, y, z, maxval);
 }
 
 proc rgb2hcl(red, green, blue, maxval: real = 255.0): (real, real, real) {

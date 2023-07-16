@@ -4,3 +4,12 @@ proc squareKernel(side: int, fill: real = 1.0) {
     for k in kernel do k = fill;
     return kernel;
 }
+
+proc circleKernel(radius: int, fill: real = 1.0) {
+    var kernel: [{0..0, -radius..radius, -radius..radius}] real;
+    for (_, y, x) in kernel.domain {
+        kernel[0, y, x] = if sqrt(x*x + y*y) <= radius
+            then fill else 0;
+    }
+    return kernel;
+}
