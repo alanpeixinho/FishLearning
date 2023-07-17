@@ -4,6 +4,8 @@ CLI_OBJECTS = $(patsubst cli/%.chpl,bin/%,$(CLI_SOURCES))
 FLAGS = --fast
 LIBS = -lpng
 
+all: cli
+
 bin/%: cli/%.chpl
 	@echo $<
 	chpl ${FLAGS} $< ${MODULES} -o $@ $(LIBS)
@@ -11,4 +13,7 @@ bin/%: cli/%.chpl
 cli: $(CLI_OBJECTS)
 	@echo $(CLI_OBJECTS)
 
-all: cli
+clean:
+	rm bin/*
+
+

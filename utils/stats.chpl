@@ -1,9 +1,14 @@
 private use math;
 private use Math;
 
-proc gaussianPdf(x, mu, sigma) {
-  const expo = -(x-mu)**2 + epsilon / (2 * sigma**2 + epsilon);
-  return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);
+proc gaussianPdf(x: real, mu = 0.0, sigma = 1.0) {
+    const expo = -(((x-mu)**2 + epsilon) / (2 * sigma**2 + epsilon));
+    return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);
+}
+
+proc gaussian2Pdf(x, y, mu = 0.0, sigma = 1.0) {
+    const expo = - (((x-mu)**2 + (y-mu)**2 + epsilon) / (2 * sigma**2 + epsilon));
+    return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);
 }
 
 proc histogram(data) {
@@ -16,4 +21,3 @@ proc histogram(data) {
 
     return hist;
 }
-

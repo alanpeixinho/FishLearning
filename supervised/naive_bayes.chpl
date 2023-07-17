@@ -39,7 +39,7 @@ class NaiveBayes {
       const n_test = X.shape(0);
       var Y: [1..n_test] int;
       forall i in 1..n_test {
-          Y(i) = predict(X(i, ..));
+          Y[i] = predict(X[i, ..]);
       }
 
       return Y;
