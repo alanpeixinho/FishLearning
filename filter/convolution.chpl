@@ -8,7 +8,8 @@ proc convolution(img: Image, kernel) {
 
 proc convolution(data: ?dtype, kernel) {
     var conv: dtype;
-    const n = + reduce kernel;
+    var n = + reduce kernel;
+    if n == 0 then n = 1.0;
     forall (z, y, x) in data.domain {
         var val = 0.0;
         for (kz, ky, kx) in kernel.domain {

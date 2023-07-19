@@ -6,8 +6,8 @@ proc gaussianPdf(x: real, mu = 0.0, sigma = 1.0) {
     return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);
 }
 
-proc gaussian2Pdf(x, y, mu = 0.0, sigma = 1.0) {
-    const expo = - (((x-mu)**2 + (y-mu)**2 + epsilon) / (2 * sigma**2 + epsilon));
+proc gaussian2Pdf(x, y, mu_x = 0.0, mu_y = 0.0, sigma = 1.0) {
+    const expo = - (((x-mu_x)**2 + (y-mu_y)**2 + epsilon) / (2 * sigma**2 + epsilon));
     return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);
 }
 

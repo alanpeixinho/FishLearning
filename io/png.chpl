@@ -73,11 +73,11 @@ proc writePng(filepath: string, img: [] ?dtype)
             );
     png_write_info(png, info);
 
-    var rows = c_malloc(c_ptr(c_uchar), height);
+    var rows = allocate(c_ptr(c_uchar), height);
     const rowSize = png_get_rowbytes(png, info);
 
     for row in 0..#height {
-        rows[row] = c_malloc(c_uchar, rowSize);
+        rows[row] = allocate(c_uchar, rowSize);
     }
 
     for (y, x) in {0..#height, 0..#width} {
@@ -93,9 +93,9 @@ proc writePng(filepath: string, img: [] ?dtype)
     png_write_end(png, nil);
 
     for row in 0..#height {
-        c_free(rows[row]);
+        deallocate(rows[row]);
     }
-    c_free(rows);
+    deallocate(rows);
 
     fclose(pngFile);
     png_destroy_write_struct(c_ptrTo(png), c_ptrTo(info));
@@ -122,11 +122,11 @@ proc readPng(filepath: string, type dtype: numeric) {
     const channels = numChannels(colorType);
     const bytedepth = bitdepth / 8;
 
-    var rows = c_malloc(c_ptr(c_uchar), height);
+    var rows = allocate(c_ptr(c_uchar), height);
     const rowSize = png_get_rowbytes(png, info);
 
     for row in 0..#height {
-        rows[row] = c_malloc(c_uchar, rowSize);
+        rows[row] = allocate(c_uchar, rowSize);
     }
 
     png_read_image(png, rows);
@@ -144,9 +144,9 @@ proc readPng(filepath: string, type dtype: numeric) {
     }
 
     for row in 0..#height {
-        c_free(rows[row]);
+        deallocate(rows[row]);
     }
-    c_free(rows);
+    deallocate(rows);
 
     fclose(pngFile);
     png_destroy_read_struct(c_ptrTo(png), c_ptrTo(info), nil);
