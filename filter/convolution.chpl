@@ -6,7 +6,7 @@ proc convolution(img: Image, kernel) {
     convolution(img.b, kernel);
 }
 
-proc convolution(data: ?dtype, kernel) {
+proc convolution(ref data: ?dtype, kernel) {
     var conv: dtype;
     var n = + reduce kernel;
     if n == 0 then n = 1.0;

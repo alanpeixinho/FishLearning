@@ -6,8 +6,8 @@ extern {
 #include <png.h>
 }
 
-proc c_str_define(s: c_string): string {
-    return (s: string).strip("\"");
+proc c_str_define(s: c_ptrConst(c_char)): string {
+    return string.createBorrowingBuffer(s).strip("\"");
 }
 
 const LIBPNG_VERSION = c_str_define(PNG_LIBPNG_VER_STRING);
@@ -15,7 +15,7 @@ const LIBPNG_VERSION = c_str_define(PNG_LIBPNG_VER_STRING);
 use CTypes;
 
 extern type FILE;
-extern proc fopen(filename: c_string, iomode: c_string): c_ptr(FILE);
+extern proc fopen(filename: c_ptrConst(c_char), iomode: c_ptrConst(c_char)): c_ptr(FILE);
 extern proc fclose(stream: c_ptr(FILE)): c_int;
 
 private proc emptyImage(type dtype: numeric) {
