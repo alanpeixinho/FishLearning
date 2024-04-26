@@ -16,23 +16,23 @@ proc oneHotEncoder(Y: [], nlabels: int) {
 }
 
 proc oneHotEncoder(Y: []) {
-  return oneHotEncoder(Y, max(Y));
+    return oneHotEncoder(Y, max(Y));
 }
 
 proc l1norm(X1, X2) {
-  var d = 0.0;
-  for (x1, x2) in zip(X1, X2) {
-    d += abs(x1 - x2);
-  }
-  return d;
+    var d = 0.0;
+    for (x1, x2) in zip(X1, X2) {
+        d += abs(x1 - x2);
+    }
+    return d;
 }
 
 proc l2norm(X1, X2) {
-  var d = 0.0;
-  for (x1, x2) in zip(X1, X2) {
-    d += (x1 - x2) * (x1 - x2);
-  }
-  return sqrt(d);
+    var d = 0.0;
+    for (x1, x2) in zip(X1, X2) {
+        d += (x1 - x2) * (x1 - x2);
+    }
+    return sqrt(d);
 }
 
 proc sigmoid(x) {
@@ -40,44 +40,46 @@ proc sigmoid(x) {
 }
 
 proc accuracy(X1, X2) {
-  var right = 0.0;
-  var total = X1.size;
+    assert(X1.size == X2.size);
 
-  for (x1, x2) in zip(X1, X2) {
-    if x1 == x2 {
-      right += 1;
+    var right = 0.0;
+    var total = X1.size;
+
+    for (x1, x2) in zip(X1, X2) {
+        if x1 == x2 {
+            right += 1;
+        }
     }
-  }
 
-  return right/total;
+    return right/total;
 }
 
 proc sum(array) {
-  var s = 0.0;
-  for i in array {
-    s += i;
-  }
-  return s;
+    var s = 0.0;
+    for i in array {
+        s += i;
+    }
+    return s;
 }
 
 proc min(array: [] ?dtype) {
-  var m: dtype = max(dtype);
-  for a in array {
-    if a < m {
-      m = a;
+    var m: dtype = max(dtype);
+    for a in array {
+        if a < m {
+            m = a;
+        }
     }
-  }
-  return m;
+    return m;
 }
 
 proc max(array: [] ?dtype) {
-  var m: dtype = min(dtype);
-  for i in array {
-    if i > m {
-      m = i;
+    var m: dtype = min(dtype);
+    for i in array {
+        if i > m {
+            m = i;
+        }
     }
-  }
-  return m;
+    return m;
 }
 
 proc minmax(array: [] ?dtype) {
@@ -95,15 +97,14 @@ proc clamp(val, minimum, maximum) {
 }
 
 proc dotProduct(ref C: [?DC], ref A: [?DA], ref B: [?DB])
-where DC.rank == 2 && DA.rank == 2 && DB.rank == 2
+    where DC.rank == 2 && DA.rank == 2 && DB.rank == 2
 {
 
-  forall (row, col) in DC {
-    // Zero out the value, in case C is reused.
-    C(row, col) = 0;
-    for i in DA.dim(2) do
-    C(row, col) += A(row, i) * B(i, col);
-  }
-
-  /* C = A.dot(B); */
+    forall (row, col) in DC {
+        // Zero out the value, in case C is reused.
+        C(row, col) = 0;
+        for i in DA.dim(2) do
+            C(row, col) += A(row, i) * B(i, col);
+    }
+    /* C = A.dot(B); */
 }

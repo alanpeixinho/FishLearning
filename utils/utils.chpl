@@ -65,3 +65,13 @@ proc unique(array: [] ?T) {
   const s = new set(T, array);
   return s.toArray();
 }
+
+proc reverse(ref array: []) {
+    var st = array.domain.low;
+    var en = array.domain.high;
+    while st < en {
+        array(st) <=> array(en);
+        st += 1;
+        en -= 1;
+    }
+}
