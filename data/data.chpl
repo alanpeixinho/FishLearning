@@ -65,7 +65,7 @@ private proc lineSplit(line, delimiter) throws {
 
 proc readCSV(filepath: string, delimiter = ' ', labelIdx = 0) throws {
     const file = open(filepath, ioMode.r);
-    const lines = for line in file.reader().lines() do lineSplit(line, delimiter);
+    const lines = for line in file.reader(locking=false).lines() do lineSplit(line, delimiter);
     file.close();
     const matrix = toDataset(lines, labelIdx);
     return matrix;

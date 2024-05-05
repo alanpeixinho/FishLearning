@@ -1,7 +1,7 @@
 use Set;
 private use Time;
 
-var profileKeys: domain(string);
+var profileKeys: domain(string, parSafe=true);
 var profiler: [profileKeys] stopwatch;
 
 proc tic(tag: string = "Profiler") {

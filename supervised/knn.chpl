@@ -31,7 +31,6 @@ module knn {
         const ntestSamples = X.shape(1);
 
         forall test in 1..ntestSamples {
-
           var distNeighbors: [1..k] real = INFINITY;
           var neighbors: [1..k] int;
           var classes: [1..nclasses] int = 0;
