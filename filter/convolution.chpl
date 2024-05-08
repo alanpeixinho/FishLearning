@@ -1,4 +1,5 @@
 use image;
+use utils;
 
 proc convolution(img: Image, kernel) {
     convolution(img.l, kernel);
@@ -6,8 +7,8 @@ proc convolution(img: Image, kernel) {
     convolution(img.b, kernel);
 }
 
-proc convolution(ref data: ?dtype, kernel) {
-    var conv: dtype;
+proc convolution(ref data: [?ddomain] ?dtype, kernel) {
+    var conv: [ddomain] dtype;
     var n = + reduce kernel;
     if n == 0 then n = 1.0;
     forall (z, y, x) in data.domain {
@@ -18,7 +19,7 @@ proc convolution(ref data: ?dtype, kernel) {
                 val += k * data[z + kz, y + ky, x + kx];
             }
         }
-        conv[z, y, x] = val / n;
+        conv[z, y, x] = (val / n) : dtype;
     }
     data = conv;
 }

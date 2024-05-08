@@ -7,6 +7,7 @@ config const output: string;
 config const kernelSize: int;
 
 proc main() {
+
     var img = image.readImage(input);
     const kernel = crossKernel(kernelSize, 1.0);
 

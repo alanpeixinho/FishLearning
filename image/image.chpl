@@ -1,18 +1,20 @@
 use Math;
 use math;
 use png;
+use utils;
 
 class Image {
+    type dtype = real;
     const depth: uint(64) = 1;
     const height: uint(64);
     const width: uint(64);
     const channels: uint(64);
 
-    var l: [0..#depth, 0..#height, 0..#width] real(64);
+    var l: [0..#depth, 0..#height, 0..#width] dtype;
     // color
     var colorDomain: domain(3);
-    var a: [colorDomain] real(64);
-    var b: [colorDomain] real(64);
+    var a: [colorDomain] dtype;
+    var b: [colorDomain] dtype;
 
     proc postinit() {
         if channels > 1 {
@@ -49,26 +51,29 @@ proc writeImage(filepath: string, img: Image, type dtype: numeric = uint(8)) {
     png.writePng(filepath, data);
 }
 
-proc readImage(filepath: string): Image {
+proc readImage(filepath: string, type dtype = real): Image(dtype)
+                                                     where isRealType(dtype) {
+
     const data = png.readPng(filepath, uint(16));
     const (height, width, channels) = data.shape;
 
     if data.size <= 0 then warning("No image available in : " + filepath);
 
-    var img = new Image(1, height, width, channels);
+    var img = new Image(dtype, 1, height, width, channels);
     const maxvalue = if max(data) > 255 then 65535 else 255;
 
     if img.channels > 1 {
         for (y, x) in {0..#height, 0..#width} {
             const (l, a, b) = rgb2lab(
                     data[y, x, 0], data[y, x, 1], data[y, x, 2], maxvalue);
-            img.l[0, y, x] = l;
-            img.a[0, y, x] = a;
-            img.b[0, y, x] = b;
+            img.l[0, y, x] = l: dtype;
+            img.a[0, y, x] = a: dtype;
+            img.b[0, y, x] = b: dtype;
         }
     } else {
         for (y, x) in {0..#height, 0..#width} {
-            img.l[0, y, x] = (data[y, x, 0] / maxvalue) * 100.0;
+            const l = (data[y, x, 0] / maxvalue) * 100.0;
+            img.l[0, y, x] = l: dtype;
         }
     }
 
