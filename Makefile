@@ -6,7 +6,7 @@ CLI_OBJECTS = $(patsubst cli/%.chpl,bin/%,$(CLI_SOURCES))
 FLAGS = --fast
 LIBS = -lpng -lraylib
 
-all: cli
+all: bin
 
 bin/%: cli/%.chpl $(FILES_MODULES)
 	@echo $<
