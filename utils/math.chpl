@@ -1,3 +1,4 @@
+public use Math;
 private use LinearAlgebra;
 private use BLAS;
 
