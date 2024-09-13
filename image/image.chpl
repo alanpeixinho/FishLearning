@@ -8,7 +8,7 @@ class Image {
     const depth: uint(64) = 1;
     const height: uint(64);
     const width: uint(64);
-    const channels: uint(64);
+    const channels: uint(64) = 1;
 
     var l: [0..#depth, 0..#height, 0..#width] dtype;
     // color
@@ -23,6 +23,25 @@ class Image {
             colorDomain = {..#0, ..#0, ..#0};
         }
     }
+}
+
+proc copyImage(const ref input: Image, ref output: Image) {
+    output.l = input.l;
+    output.a = input.a;
+    output.b = input.b;
+}
+
+proc Image.clone(const copyData = true) {
+    var img = new Image(dtype = this.dtype,
+            height = this.height,
+            width = this.width,
+            channels = this.channels);
+    if (copyData) {
+        img.l = this.l;
+        img.a = this.a;
+        img.b = this.b;
+    }
+    return img;
 }
 
 proc writeImage(filepath: string, img: Image, type dtype: numeric = uint(8)) {

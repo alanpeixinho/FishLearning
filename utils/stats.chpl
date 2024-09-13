@@ -1,6 +1,27 @@
 private use math;
 private use Math;
 
+proc mean(array: []) {
+  var s = 0.0;
+  forall a in array with (+reduce s) {
+    s += a/array.size;
+  }
+  return s;
+}
+
+proc variance(array: []) {
+  var m = mean(array);
+  var s = 0.0;
+  forall a in array with (+reduce s) {
+    s += (a-m)**2 / array.size;
+  }
+  return s;
+}
+
+proc stdDev(array: []) {
+  return sqrt(variance(array));
+}
+
 proc gaussianPdf(x: real, mu = 0.0, sigma = 1.0) {
     const expo = -(((x-mu)**2 + epsilon) / (2 * sigma**2 + epsilon));
     return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);

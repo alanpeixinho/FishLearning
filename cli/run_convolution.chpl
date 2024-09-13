@@ -9,7 +9,7 @@ config const kernelSize: int;
 proc main() {
 
     var img = image.readImage(input);
-    const kernel = crossKernel(kernelSize, 1.0);
+    const kernel = circleKernel(kernelSize, 1.0);
 
     /*const kernel = laplacianKernel();*/
 

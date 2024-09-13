@@ -9,7 +9,7 @@ proc squareKernel(size: int, fill: real = 1.0) {
 
 proc circleKernel(radius: int, fill: real = 1.0) {
     const squareDomain = {0..0, -radius..radius, -radius..radius};
-    var kernel: [squareDomain] real = fill;
+    var kernel: [squareDomain] real;
     for (_, y, x) in squareDomain {
         if sqrt(x*x + y*y) <= radius {
             kernel[0, y, x] = fill;

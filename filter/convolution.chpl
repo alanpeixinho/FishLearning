@@ -1,14 +1,20 @@
 use image;
 use utils;
 
-proc convolution(img: Image, kernel) {
-    convolution(img.l, kernel);
-    convolution(img.a, kernel);
-    convolution(img.b, kernel);
+proc convolution(ref img: Image, const ref kernel) {
+    /*var temp = new Image(dtype = img.dtype,*/
+            /*height = img.height,*/
+            /*width = img.width,*/
+            /*channels = img.channels);*/
+    var temp = img.clone(false);
+    convolution(img.l, kernel, temp.l);
+    convolution(img.a, kernel, temp.a);
+    convolution(img.b, kernel, temp.b);
+    copyImage(temp, img);
 }
 
-proc convolution(ref data: [?ddomain] ?dtype, kernel) {
-    var conv: [ddomain] dtype;
+proc convolution(const ref data: [?ddomain] ?dtype, const ref kernel,
+        ref conv: [ddomain] dtype) {
     var n = + reduce kernel;
     if n == 0 then n = 1.0;
     forall (z, y, x) in data.domain {
@@ -21,6 +27,5 @@ proc convolution(ref data: [?ddomain] ?dtype, kernel) {
         }
         conv[z, y, x] = (val / n) : dtype;
     }
-    data = conv;
 }
 

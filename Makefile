@@ -1,9 +1,9 @@
-MODULES = filter supervised utils data image io graphics
+MODULES = filter supervised utils data image io graphics frequency
 LINK_MODULES = $(addprefix -M, $(MODULES))
 FILES_MODULES = $(wildcard $(MODULES)/*.chpl)
 CLI_SOURCES = $(wildcard cli/*.chpl)
 CLI_OBJECTS = $(patsubst cli/%.chpl,bin/%,$(CLI_SOURCES))
-FLAGS = --fast
+FLAGS =
 LIBS = -lpng -lraylib
 
 all: bin

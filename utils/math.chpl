@@ -36,7 +36,7 @@ proc l2norm(X1, X2) {
     return sqrt(d);
 }
 
-proc sigmoid(x) {
+inline proc sigmoid(x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
@@ -93,7 +93,7 @@ proc minmax(array: [] ?dtype) {
     return (minval, maxval);
 }
 
-proc clamp(val, minimum, maximum) {
+inline proc clamp(val, minimum, maximum) {
     return max(min(val, maximum), minimum);
 }
 
@@ -108,4 +108,8 @@ proc dotProduct(ref C: [?DC], ref A: [?DA], ref B: [?DB])
             C(row, col) += A(row, i) * B(i, col);
     }
     /* C = A.dot(B); */
+}
+
+inline proc isPowerOf2(x: ?dtype) where isIntegralType(dtype) {
+    return x & (x-1) == 0;
 }
