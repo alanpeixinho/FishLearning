@@ -1,28 +1,34 @@
 private use math;
 private use IO.FormattedIO;
 
-proc dft(ref data: [?ddomain]) {
+proc dft(ref data: [?ddomain], direction=1) {
     var freq: [ddomain] complex(64) = 0;
     dft(data, freq);
     return freq;
 }
 
-proc dft(ref data: [?ddomain], ref freq: [ddomain] ?ftype)
+proc dft(ref data: [?ddomain], ref freq: [ddomain] ?ftype, direction=1)
     where ddomain.rank == 3 {
         const (depth, height, width) = data.shape;
-        /*var freqTemp: [ddomain] ftype;*/
-        freq = data: complex(64);
+        var freqTemp: [ddomain] complex(64);
+        freqTemp = data: complex(64);
+        writeln((max reduce (freqTemp.re)));
         for (z, y) in ddomain(.., .., 0) {
             /*dft1(data[z, y, ..], freq[z, y, ..]);*/
-            fft1(freq[z, y, ..]);
+            fft1(freqTemp[z, y, ..], direction);
         }
         for (z, x) in ddomain(.., 0, ..) {
             /*dft1(freq[z, .., x], freqTemp[z, .., x]);*/
-            fft1(freq[z, .., x]);
+            fft1(freqTemp[z, .., x], direction);
         }
         for (y, x) in ddomain(0, .., ..) {
             /*dft1(freqTemp[.., y, x], freq[.., y, x]);*/
-            fft1(freq[.., y, x]);
+            fft1(freqTemp[.., y, x], direction);
+        }
+        if direction < 0 {
+            freq = (freqTemp / freq.size) : ftype;
+        } else {
+            freq = freqTemp: ftype;
         }
     }
 
@@ -39,7 +45,7 @@ proc dft1(ref data: [?ddomain], ref freq: [ddomain] ?ftype) {
 
 
 /*Cooley-Tukey FFT */
-proc fft1(ref x: [?ddomain]) throws where ddomain.rank == 1 {
+proc fft1(ref x: [?ddomain] ?dtype, direction=1) throws where ddomain.rank == 1 {
     const N = ddomain.shape[0];
     if N == 1 {
         return;
@@ -68,20 +74,24 @@ proc fft1(ref x: [?ddomain]) throws where ddomain.rank == 1 {
     // FFT computation
     var len = 2;
     while len <= N {
-        const angle = (-2i * pi / len): complex(64);
+        const angle = (-direction * 2i * pi / len): complex;
         const wlen = exp(angle);
         for i in 0..(N-len) by len {
-            var w = 1.0: complex(64);
+            var w = 1.0: complex;
             for j in 0..len/2-1 {
                 const u = x[i + j];
                 const t = w * x[i + j + len/2];
-                x[i + j] = u + t;
-                x[i + j + len/2] = u - t;
+                x[i + j] = (u + t): dtype;
+                x[i + j + len/2] = (u - t): dtype;
                 w *= wlen;
             }
         }
         len *= 2;
     }
+
+    /*if direction < 0 {*/
+        /*x /= x.size;*/
+    /*}*/
 }
 
 proc shift(ref data: [?ddomain]) where ddomain.rank == 1 {

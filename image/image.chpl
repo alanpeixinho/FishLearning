@@ -23,6 +23,28 @@ class Image {
             colorDomain = {..#0, ..#0, ..#0};
         }
     }
+
+    iter iterVoxels() ref {
+        for i in l {
+            yield i;
+        }
+        for i in a {
+            yield i;
+        }
+        for i in b {
+            yield i;
+        }
+    }
+
+    iter iterColor() ref {
+        var lab: (3*dtype);
+        for (z,y,x) in colorDomain {
+            lab = (l[z,y,x], a[z,y,x], b[z,y,x]);
+            yield lab;
+            (l[z,y,x], a[z,y,x], b[z,y,x]) = lab;
+        }
+    }
+
 }
 
 proc copyImage(const ref input: Image, ref output: Image) {
@@ -208,6 +230,11 @@ proc lab2hcl(l: real, a: real, b: real): (real, real, real) {
 proc rgb2lab(red, green, blue, maxval: real = 255.0): (real, real, real) {
     const (x, y, z) = rgb2xyz(red, green, blue, maxval);
     return xyz2lab(x, y, z);
+}
+
+proc lab2rgb(lab: (3*?dtype)): (real, real, real) {
+    const (x, y, z) = lab2xyz((...lab));
+    return xyz2rgb(x, y, z, 255.0);
 }
 
 proc lab2rgb(l, a, b, maxval: real = 255.0): (real, real, real) {

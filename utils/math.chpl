@@ -113,3 +113,7 @@ proc dotProduct(ref C: [?DC], ref A: [?DA], ref B: [?DB])
 inline proc isPowerOf2(x: ?dtype) where isIntegralType(dtype) {
     return x & (x-1) == 0;
 }
+
+inline proc nextPowerOf2(x) {
+    return 2 ** ceil(log2(x));
+}
