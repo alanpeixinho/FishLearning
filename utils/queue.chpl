@@ -1,47 +1,49 @@
 
 class Queue {
     type dtype;
-    const QUEUE_MAX_SIZE: int = 40960;
-    var data: [0..#QUEUE_MAX_SIZE] int;
+    const max_size: int = 40960;
+    var data: [0..#max_size] int;
+
     var elems: int = 0;
     var head: int = 0;
     var tail: int = 0;
+}
 
-    proc enqueue(val: dtype) {
-        if elems >= QUEUE_MAX_SIZE then halt("Queue has surpassed its limit");
 
-        data[tail] = val;
-        tail = (tail + 1) % QUEUE_MAX_SIZE;
-        elems += 1;
-    }
+proc Queue.enqueue(val: dtype) {
+    if elems >= max_size then halt("Queue has surpassed its limit");
 
-    proc front(): dtype {
-        if elems <= 0 then halt("Queue is empty");
-        return data[head];
-    }
+    data[tail] = val;
+    tail = (tail + 1) % max_size;
+    elems += 1;
+}
 
-    proc dequeue(): dtype {
-        const val = front();
-        head = (head + 1) % QUEUE_MAX_SIZE;
-        elems -= 1;
-        return val;
-    }
+proc Queue.front(): ref dtype {
+    if elems <= 0 then halt("Queue is empty");
+    return data[head];
+}
 
-    proc isEmpty : bool {
-        return elems <= 0;
-    }
+proc Queue.dequeue(): dtype {
+    const val = front();
+    head = (head + 1) % max_size;
+    elems -= 1;
+    return val;
+}
 
-    proc size: int {
-        return elems;
-    }
+proc Queue.isEmpty : bool {
+    return elems <= 0;
+}
 
-    iter these() {
-        if isEmpty then return;
-        if head < tail {
-            for i in head..#elems do yield data[i];
-        } else {
-            for i in head..<QUEUE_MAX_SIZE do yield data[i];
-            for i in 0..<tail do yield data[i];
-        }
+proc Queue.size: int {
+    return elems;
+}
+
+iter Queue.these() ref dtype {
+    if isEmpty then return;
+    if head < tail {
+        for i in head..#elems do yield data[i];
+    } else {
+        for i in head..<max_size do yield data[i];
+        for i in 0..<tail do yield data[i];
     }
 }

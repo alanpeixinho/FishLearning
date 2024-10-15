@@ -4,8 +4,8 @@ private use BLAS;
 
 const epsilon = 1e-8;
 
-proc oneHotEncoder(Y: [], nlabels: int) {
-    const nsamples = Y.shape(1);
+proc oneHotEncoder(const ref Y: [], nlabels: int) {
+    const nsamples = Y.shape(0);
     var encoded: [1..nsamples, 1..nlabels] real;
 
     encoded = 0.0;
@@ -16,11 +16,11 @@ proc oneHotEncoder(Y: [], nlabels: int) {
     return encoded;
 }
 
-proc oneHotEncoder(Y: []) {
+proc oneHotEncoder(const ref Y: []) {
     return oneHotEncoder(Y, max(Y));
 }
 
-proc l1norm(X1, X2) {
+proc l1norm(const ref X1, const ref X2) {
     var d = 0.0;
     for (x1, x2) in zip(X1, X2) {
         d += abs(x1 - x2);
@@ -28,10 +28,10 @@ proc l1norm(X1, X2) {
     return d;
 }
 
-proc l2norm(X1, X2) {
+proc l2norm(const ref X1, const ref X2) {
     var d = 0.0;
     for (x1, x2) in zip(X1, X2) {
-        d += (x1 - x2) * (x1 - x2);
+        d += (x1 - x2) ** 2;
     }
     return sqrt(d);
 }
@@ -40,11 +40,11 @@ inline proc sigmoid(x) {
     return 1.0 / (1.0 + exp(-x));
 }
 
-proc accuracy(X1, X2) {
-    assert(X1.size == X2.size);
+proc accuracy(const ref X1, const ref X2) {
+    assert(X1.shape == X2.shape);
 
     var right = 0.0;
-    var total = X1.size;
+    const total = X1.size;
 
     for (x1, x2) in zip(X1, X2) {
         if x1 == x2 {
@@ -55,7 +55,7 @@ proc accuracy(X1, X2) {
     return right/total;
 }
 
-proc sum(array) {
+proc sum(const ref array) {
     var s = 0.0;
     for i in array {
         s += i;
@@ -63,7 +63,7 @@ proc sum(array) {
     return s;
 }
 
-proc min(array: [] ?dtype) {
+proc min(const ref array: [] ?dtype) {
     var m: dtype = max(dtype);
     for a in array {
         if a < m {
@@ -73,7 +73,7 @@ proc min(array: [] ?dtype) {
     return m;
 }
 
-proc max(array: [] ?dtype) {
+proc max(const ref array: [] ?dtype) {
     var m: dtype = min(dtype);
     for i in array {
         if i > m {
@@ -83,7 +83,7 @@ proc max(array: [] ?dtype) {
     return m;
 }
 
-proc minmax(array: [] ?dtype) {
+proc minmax(const ref array: [] ?dtype) {
     var minval = max(dtype);
     var maxval = min(dtype);
     for a in array {
@@ -97,7 +97,7 @@ inline proc clamp(val, minimum, maximum) {
     return max(min(val, maximum), minimum);
 }
 
-proc dotProduct(ref C: [?DC], ref A: [?DA], ref B: [?DB])
+proc dotProduct(ref C: [?DC], const ref A: [?DA], const ref B: [?DB])
     where DC.rank == 2 && DA.rank == 2 && DB.rank == 2
 {
 

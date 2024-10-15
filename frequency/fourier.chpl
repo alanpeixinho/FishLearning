@@ -1,51 +1,79 @@
 private use math;
 private use IO.FormattedIO;
 
-proc dft(ref data: [?ddomain], direction=1) {
+proc dft(const ref data: [?ddomain], direction=1) {
     var freq: [ddomain] complex(64) = 0;
     dft(data, freq);
     return freq;
 }
 
-proc dft(ref data: [?ddomain], ref freq: [ddomain] ?ftype, direction=1)
+proc fft(const ref data: [?ddomain], direction=1) {
+    var freq: [ddomain] complex(64) = 0;
+    fft(data, freq);
+    return freq;
+}
+
+proc fft(const ref data: [?ddomain], ref freq: [ddomain] ?ftype, direction=1)
     where ddomain.rank == 3 {
         const (depth, height, width) = data.shape;
-        var freqTemp: [ddomain] complex(64);
-        freqTemp = data: complex(64);
-        writeln((max reduce (freqTemp.re)));
-        for (z, y) in ddomain(.., .., 0) {
-            /*dft1(data[z, y, ..], freq[z, y, ..]);*/
+
+        //intermediate dfts and idfts should be complex to not loose information
+        var freqTemp: [ddomain] complex(64) = data: complex(64);
+
+        forall (z, y) in ddomain(.., .., 0) {
             fft1(freqTemp[z, y, ..], direction);
         }
-        for (z, x) in ddomain(.., 0, ..) {
-            /*dft1(freq[z, .., x], freqTemp[z, .., x]);*/
+        forall (z, x) in ddomain(.., 0, ..) {
             fft1(freqTemp[z, .., x], direction);
         }
-        for (y, x) in ddomain(0, .., ..) {
-            /*dft1(freqTemp[.., y, x], freq[.., y, x]);*/
+        forall (y, x) in ddomain(0, .., ..) {
             fft1(freqTemp[.., y, x], direction);
         }
-        if direction < 0 {
-            freq = (freqTemp / freq.size) : ftype;
-        } else {
-            freq = freqTemp: ftype;
-        }
-    }
 
-proc dft1(ref data: [?ddomain], ref freq: [ddomain] ?ftype) {
+        freq = freqTemp : ftype;
+}
+
+proc dft(const ref data: [?ddomain], ref freq: [ddomain] ?ftype, direction=1)
+    where ddomain.rank == 3 {
+        const (depth, height, width) = data.shape;
+
+        //intermediate dfts and idfts should be complex to not loose information
+        var freqTemp1: [ddomain] complex(64) = data: complex(64);
+        var freqTemp2: [ddomain] complex(64);
+
+        forall (z, y) in ddomain(.., .., 0) {
+            dft1(freqTemp1[z, y, ..], freqTemp2[z, y, ..], direction);
+        }
+        forall (z, x) in ddomain(.., 0, ..) {
+            dft1(freqTemp2[z, .., x], freqTemp1[z, .., x], direction);
+        }
+        forall (y, x) in ddomain(0, .., ..) {
+            dft1(freqTemp1[.., y, x], freqTemp2[.., y, x], direction);
+        }
+
+        freq = freqTemp2 : ftype;
+}
+
+proc dft1(const ref data: [?ddomain] ?ftype, ref freq: [ddomain] ftype, direction=1)
+    where ddomain.rank == 1 && isComplexType(ftype) {
     const N = ddomain.shape[0];
     for n in data.domain {
         freq[n] = 0;
-        for k in data.domain {
-            const angle = -2i * pi * k * n / N;
-            freq[n] += (data[k] * exp(angle)): ftype;
+        for k in 0..#N {
+            const angle = -direction * 2 * pi * k * n / N;
+            freq[n] += (data[k] * exp(angle * 1i)): ftype;
         }
+    }
+
+    if direction < 0 {
+        freq /= freq.size;
     }
 }
 
 
 /*Cooley-Tukey FFT */
-proc fft1(ref x: [?ddomain] ?dtype, direction=1) throws where ddomain.rank == 1 {
+proc fft1(ref x: [?ddomain] ?ftype, direction=1) throws
+    where ddomain.rank == 1 && isComplexType(ftype) {
     const N = ddomain.shape[0];
     if N == 1 {
         return;
@@ -74,24 +102,24 @@ proc fft1(ref x: [?ddomain] ?dtype, direction=1) throws where ddomain.rank == 1 
     // FFT computation
     var len = 2;
     while len <= N {
-        const angle = (-direction * 2i * pi / len): complex;
-        const wlen = exp(angle);
+        const angle = (-direction * 2 * pi / len);
+        const wlen = exp(angle * 1i);
         for i in 0..(N-len) by len {
             var w = 1.0: complex;
             for j in 0..len/2-1 {
                 const u = x[i + j];
                 const t = w * x[i + j + len/2];
-                x[i + j] = (u + t): dtype;
-                x[i + j + len/2] = (u - t): dtype;
+                x[i + j] = (u + t): ftype;
+                x[i + j + len/2] = (u - t): ftype;
                 w *= wlen;
             }
         }
         len *= 2;
     }
 
-    /*if direction < 0 {*/
-        /*x /= x.size;*/
-    /*}*/
+    if direction < 0 {
+        x /= x.size;
+    }
 }
 
 proc shift(ref data: [?ddomain]) where ddomain.rank == 1 {

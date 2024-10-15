@@ -1,23 +1,29 @@
 enum Policy {min, max};
 
-proc heapify(ref data: [], i = 0, policy = Policy.min) {
+class Heap {
+    type dtype;
+    const size: int;
+    var data: [0..#size] dtype;
+}
+
+proc Heap.heapify(i, policy = Policy.min) {
   if policy == Policy.min {
-    minHeapify(data, i);
+    minHeapify(i);
   } else {
-    maxHeapify(data, i);
+    maxHeapify(i);
   }
 }
 
-proc buildHeap(ref data: [], policy = Policy.min) {
+proc Heap.buildHeap(policy = Policy.min) {
     const last = data.size / 2 - 1; // ignore leaf nodes
     for i in 0..last by -1 {
-        heapify(data, i, policy);
+        heapify(i, policy);
     }
 }
 
-proc minHeapify(ref data: [], i = 0) {
-  var l = left(i);
-  var r = right(i);
+proc Heap.minHeapify(i) {
+  const l = left(i);
+  const r = right(i);
   var top = i;
 
   if l < data.size && data(l) < data(top) {
@@ -29,13 +35,13 @@ proc minHeapify(ref data: [], i = 0) {
 
   if top != i {
     data(top) <=> data(i);
-    minHeapify(data, top);
+    minHeapify(top);
   }
 }
 
-proc maxHeapify(ref data: [] ?T, i = 0) {
-  var l = left(i);
-  var r = right(i);
+proc Heap.maxHeapify(i = 0) {
+  const l = left(i);
+  const r = right(i);
   var top = i;
 
   if l < data.size && data(l) > data(top) {
@@ -47,7 +53,7 @@ proc maxHeapify(ref data: [] ?T, i = 0) {
 
   if top != i {
     data(top) <=> data(i);
-    maxHeapify(data, top);
+    maxHeapify(top);
   }
 }
 

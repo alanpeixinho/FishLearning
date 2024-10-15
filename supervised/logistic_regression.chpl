@@ -3,15 +3,15 @@ private use utils;
 private use Random;
 
 class LogisticRegression {
-    var n_feats, n_classes: int;
-    var coef: [1..n_feats, 1..n_classes] real;
-    var bias: [1..n_classes] real;
+    const n_feats, n_classes: int;
+    const coef: [1..n_feats, 1..n_classes] real;
+    const bias: [1..n_classes] real;
 }
 
 proc train(X, Y, learning_rate = 1e-4, max_iter = 10000, stop_criteria = 1e-10) {
 
-    var (n_train, n_feats) = X.shape;
-    var n_classes = max(Y): int(64);
+    const (n_train, n_feats) = X.shape;
+    const n_classes = max(Y): int(64);
 
     var coef: [1..n_feats, 1..n_classes] real;
     var bias: [1..n_classes] real;
@@ -22,14 +22,14 @@ proc train(X, Y, learning_rate = 1e-4, max_iter = 10000, stop_criteria = 1e-10) 
     var Y_pred: [{1..n_train, 1..n_classes}] real;
 
     var Y_enc = math.oneHotEncoder(Y, n_classes);
-    var prev = INFINITY;
+    var prev = inf;
 
     var lr = learning_rate;
 
     for it in 1..max_iter {
 
         forward(X, coef, bias, Y_pred);
-        var cost = computeCost(Y_pred, Y_enc);
+        const cost = computeCost(Y_pred, Y_enc);
         backward(X, Y_enc, Y_pred, gradient); //compute gradient
         coef -= gradient * lr; //update weights
 
@@ -39,7 +39,8 @@ proc train(X, Y, learning_rate = 1e-4, max_iter = 10000, stop_criteria = 1e-10) 
         prev = cost;
     }
 
-    var classifier = new LogisticRegression(coef = coef, bias = bias,
+    var classifier = new LogisticRegression(
+            coef = coef, bias = bias,
             n_classes = n_classes,
             n_feats = n_feats);
 
@@ -65,12 +66,13 @@ proc computeCost(prediction, y) {
 proc forward(X, coef, bias, ref pred) {
 
     //pred = 0.0;
-    var (n_train, n_feats) = X.shape;
-    var n_classes = pred.shape(2);
+    const (n_train, n_feats) = X.shape;
+    const n_classes = pred.shape(1);
+
     for i in 1..n_train {
         for c in 1..n_classes {
             for j in 1..n_feats {
-                pred(i, c) += X(i, j): real(64) * coef(j, c);
+                pred(i, c) += X(i, j): real * coef(j, c);
             }
             pred(i, c) = sigmoid(pred(i, c) + bias(c));
         }
@@ -84,8 +86,8 @@ proc forward(X, coef, bias, ref pred) {
 
 proc backward(X, Y, Ypred, grad) {
 
-    var (n_train, n_feats) = X.shape;
-    var n_classes = Ypred.shape(2);
+    const (n_train, n_feats) = X.shape;
+    const n_classes = Ypred.shape(1);
 
     grad = 0;
 
@@ -98,13 +100,13 @@ proc backward(X, Y, Ypred, grad) {
     }
 }
 
-proc classify(classifier: LogisticRegression, X, Y) {
+proc LogisticRegression.classify(X, Y) {
 
     var (n_test, n_feats) = X.shape;
     var n_classes = classifier.n_classes;
 
     var prediction: [{1..n_test, 1..n_classes}] real = 0.0;
-    forward(X, classifier.coef, classifier.bias, prediction);
+    forward(X, coef, bias, prediction);
 
     /* writeln("classify: ", n_classes); */
     forall t in 1..n_test {

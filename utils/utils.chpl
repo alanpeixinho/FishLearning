@@ -16,7 +16,7 @@ proc toc(tag: string = "Profiler") {
     profileKeys -= tag;
 }
 
-proc argmax(array: []) {
+proc argmax(const ref array: []) {
   var imax = array.domain.first;
 
   for i in array.domain {
@@ -28,7 +28,7 @@ proc argmax(array: []) {
   return imax;
 }
 
-proc argmin(array: []) {
+proc argmin(const ref array: []) {
   var imin = array.domain.first;
 
   for i in array.domain {
@@ -40,7 +40,7 @@ proc argmin(array: []) {
   return imin;
 }
 
-proc unique(array: [] ?T) {
+proc unique(const ref array: [] ?T) {
   const s = new set(T, array);
   return s.toArray();
 }

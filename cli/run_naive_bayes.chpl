@@ -16,7 +16,7 @@ proc main(): int {
             const (Xtrain, Ytrain, Xtest, Ytest) = dataset.split(trainRatio=0.5);
 
             const clf = naive_bayes.train(Xtrain, Ytrain);
-            const Ypred = clf.predict_batch(Xtest);
+            const Ypred = clf.predict(Xtest);
 
             writef("Score: %4.2dr\n", accuracy(Ytest, Ypred) * 100.0);
         } catch e {

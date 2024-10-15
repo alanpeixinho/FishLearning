@@ -1,7 +1,7 @@
 private use math;
 private use Math;
 
-proc mean(array: []) {
+proc mean(const ref array: []) {
   var s = 0.0;
   forall a in array with (+reduce s) {
     s += a/array.size;
@@ -9,7 +9,7 @@ proc mean(array: []) {
   return s;
 }
 
-proc variance(array: []) {
+proc variance(const ref array: []) {
   var m = mean(array);
   var s = 0.0;
   forall a in array with (+reduce s) {
@@ -18,7 +18,7 @@ proc variance(array: []) {
   return s;
 }
 
-proc stdDev(array: []) {
+proc stdDev(const ref array: []) {
   return sqrt(variance(array));
 }
 
@@ -32,7 +32,7 @@ proc gaussian2Pdf(x, y, mu_x = 0.0, mu_y = 0.0, sigma = 1.0) {
     return (1.0 / (sqrt(2 * pi) * (sigma + epsilon ))) * exp(expo);
 }
 
-proc histogram(data) {
+proc histogram(const ref data) {
     const (minval, maxval) = math.minmax(data);
     var hist: [minval..maxval] uint(64) = 0;
 

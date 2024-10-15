@@ -14,23 +14,28 @@ proc main() {
 
     /*logabs(fourier, img);*/
 
-    /*img.l = log(abs(fourier) + 1) * 10;*/
+    img.l = log(abs(fourier) + 1) * 5;
+    img.a = 0;
+    img.b = 0;
 
+    /*const (cz,cy,cx) = img.l.shape / 2;*/
 
-    forall f in fourier {
-        if abs(f) > 1e7 {
-            f = 0+0i;
-        }
-    }
+    /*forall (z,y,x) in fourier.domain {*/
+        /*if sqrt((cx - x)**2 + (cy - y)**2) < 1 {*/
+            /*fourier[z,y,x] = 0+0i;*/
+        /*}*/
+    /*}*/
 
-    fourier *= 4;
+    /*fourier *= 4;*/
+
+    writeImage("hue.png", img);
 
     shift(fourier);
 
     img.l = 0;
-    img.a = 0;
-    img.b = 0;
-    dft(fourier, img.l, -1);
+    /*img.a = 0;*/
+    /*img.b = 0;*/
+    fft(fourier, img.l, -1);
 
     writeln(">> ", max reduce (img.l));
     image.writeImage(output, img);

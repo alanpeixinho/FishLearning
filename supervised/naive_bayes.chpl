@@ -4,7 +4,7 @@ private use utils;
 
 class NaiveBayes {
 
-    const n_train, n_feats, n_classes: int;
+    const n_feats, n_classes: int;
 
     //global feature model
     const mu: [1..n_feats] real;
@@ -15,36 +15,37 @@ class NaiveBayes {
     const sigma_c: [1..n_classes, 1..n_feats] real;
 
     const p_class: [1..n_classes] real;
+}
 
 
-    proc predict(x): int {
-        var p_data = gaussianPdf(x, mu, sigma);
-        var p_joint_data = sum(log(p_data));
+proc NaiveBayes.predict(const ref x): int
+                           where x.rank == 1 {
+    assert(x.size == n_feats);
 
-        var p_class_given_data: [1..n_classes] real;
+    const p_data = gaussianPdf(x, mu, sigma);
+    const p_joint_data = sum(log(p_data));
 
-        for c in 1..n_classes {
-          var p_data_given_class = gaussianPdf(x, mu_c(c, ..), sigma_c(c, ..));
-          var p_joint_data_given_class =  sum(log(p_data_given_class));
-          var p = p_joint_data_given_class + p_class(c) - p_joint_data;
-          p_class_given_data(c) = p;
-        }
+    var p_class_given_data: [1..n_classes] real;
 
-
-        return argmax(p_class_given_data);
+    for c in 1..n_classes {
+      const p_data_given_class = gaussianPdf(x, mu_c(c, ..), sigma_c(c, ..));
+      const p_joint_data_given_class =  sum(log(p_data_given_class));
+      const p = p_joint_data_given_class + p_class(c) - p_joint_data;
+      p_class_given_data(c) = p;
     }
 
-    proc predict_batch(X): [] int {
 
-      const n_test = X.shape(0);
-      var Y: [1..n_test] int;
-      forall i in 1..n_test {
-          Y[i] = predict(X[i, ..]);
-      }
+    return argmax(p_class_given_data);
+}
 
-      return Y;
+proc NaiveBayes.predict(const ref xtest): [] int
+                                  where xtest.rank == 2 {
+    const (nsamples, nfeats) = xtest.shape;
+    var ytest: [1..#nsamples] int;
+    forall i in 1..#nsamples {
+        ytest[i] = predict(xtest[i, ..]);
     }
-
+    return ytest;
 }
 
 proc train(X, Y) {
@@ -100,7 +101,9 @@ proc train(X, Y) {
 
   p_class = log(p_class);
 
-  return new NaiveBayes(n_train = n_train, n_feats=n_feats,
-                        n_classes=n_classes, mu=mu, sigma=sigma,
-                        mu_c=mu_c,sigma_c=sigma_c,p_class=p_class);
+  return new NaiveBayes(
+          n_feats=n_feats, n_classes=n_classes,
+          mu=mu, sigma=sigma,
+          mu_c=mu_c,sigma_c=sigma_c,
+          p_class=p_class);
 }
